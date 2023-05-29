@@ -27,6 +27,11 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.5</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.nithril</groupId>
+			<artifactId>smtp-connection-pool</artifactId>
+			<version>1.4.0</version>
+		</dependency>
 	</dependencies>
 
 </project>

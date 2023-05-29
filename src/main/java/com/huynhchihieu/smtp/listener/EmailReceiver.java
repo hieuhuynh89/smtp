@@ -34,10 +34,11 @@ public class EmailReceiver {
 		// server setting
 		properties.put(String.format("mail.%s.host", protocol), host);
 		properties.put(String.format("mail.%s.port", protocol), port);
+		properties.put(String.format("mail.%s.starttls.enable", protocol), "true");
 
 		// SSL setting
-		properties.setProperty(String.format("mail.%s.socketFactory.class", protocol),
-				"javax.net.ssl.SSLSocketFactory");
+//		properties.setProperty(String.format("mail.%s.socketFactory.class", protocol),
+//				"javax.net.ssl.SSLSocketFactory");
 		properties.setProperty(String.format("mail.%s.socketFactory.fallback", protocol), "false");
 		properties.setProperty(String.format("mail.%s.socketFactory.port", protocol), String.valueOf(port));
 
@@ -65,61 +66,44 @@ public class EmailReceiver {
 
 			// opens the inbox folder
 			Folder folderInbox = store.getFolder("INBOX");
-			folderInbox.open(Folder.READ_ONLY);
+			folderInbox.open(Folder.READ_WRITE);
+			Message[] messages = folderInbox.getMessages();
+			
+			for (int i = 0; i < messages.length; i++) {
+				Message message = messages[i];
+				String subject = message.getSubject();
+				System.out.println("Found message #" + i + ": " + subject);
+			}
+
 			
 			// Add messageCountListener to listen for new messages
-			folderInbox.addMessageCountListener(new MessageCountAdapter(){
-		         
-		        public void messagesAdded(MessageCountEvent ev) {
-		            System.out.println("message listner invoked.");
-		            Message[] messages = ev.getMessages();
-		            try {
-		            	System.out.println("Got " + messages.length + " new messages");
-						printDetailsMessages(messages);
-					} catch (MessagingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		            
-		        }
-		 
-		        /* (non-Javadoc)
-		         * @see javax.mail.event.MessageCountListener#messagesRemoved(javax.mail.event.MessageCountEvent)
-		         */
-		        public void messagesRemoved(MessageCountEvent arg0) {
-		            // TODO Auto-generated method stub
-		             
-		        }
-		    });
+//			folderInbox.addMessageCountListener(new MessageCountAdapter(){
+//		         
+//		        public void messagesAdded(MessageCountEvent ev) {
+//		            System.out.println("message listner invoked.");
+//		            Message[] messages = ev.getMessages();
+//		            try {
+//		            	System.out.println("Got " + messages.length + " new messages");
+//						printDetailsMessages(messages);
+//					} catch (MessagingException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//		            
+//		        }
+//		 
+//		        /* (non-Javadoc)
+//		         * @see javax.mail.event.MessageCountListener#messagesRemoved(javax.mail.event.MessageCountEvent)
+//		         */
+//		        public void messagesRemoved(MessageCountEvent arg0) {
+//		            // TODO Auto-generated method stub
+//		             
+//		        }
+//		    });
 			
-			// Check mail once in "freq" MILLIseconds
-		    int freq = Integer.parseInt("5000");
-		 
-		    for (;;) {
-		        System.out.println("Theread will sleep for 5 seconds");
-		        Thread.sleep(freq); // sleep for freq milliseconds
-		        System.out.println("Thread awake after 5 seconds");
-		        System.out.println("message count in folder is "+folderInbox.getMessageCount());
-		        System.out.println();
-		        System.out.println();
-		    }
-
-			// fetches new messages from server
-//			Message[] messages = folderInbox.getMessages();
-			
-			/* Get the messages which is unread in the Inbox */
-//			
-//			Message messages[] = folderInbox.search(new FlagTerm(new Flags(
-//                    Flags.Flag.SEEN), false));
-//            System.out.println("No. of Unread Messages : " + messages.length);
-//            
-//            printDetailsMessages(messages);
-
-			
-
 			// disconnect
-//			folderInbox.close(false);
-//			store.close();
+			folderInbox.close(false);
+			store.close();
 		} catch (NoSuchProviderException ex) {
 			System.out.println("No provider for protocol: " + protocol);
 			ex.printStackTrace();
@@ -208,6 +192,6 @@ public class EmailReceiver {
 //		receiver.downloadEmails(protocol, host, port, userName, password);
 		
 		
-		receiver.downloadEmails("imap", "testmail.com", "143", "user2", "user2");
+		receiver.downloadEmails("pop3", "testmail.com", "110", "user2@testmail.com", "user2");
 	}
 }

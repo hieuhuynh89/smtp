@@ -102,10 +102,12 @@ public class EmailSearcher {
 	 * Test this program with a Gmail's account
 	 */
 	public static void main(String[] args) {
+		System.setProperty("javax.net.ssl.trustStore", "D:\\working\\java\\keystore\\hmailserver\\hmailserver.jks");
+		
 		String host = "testmail.com";
-		String port = "143";
+		String port = "993";
 		String userName = "user2@testmail.com";
-		String password = "user2";
+		String password = "1234";
 		EmailSearcher searcher = new EmailSearcher();
 		String keyword = "JavaMail";
 		searcher.searchEmail(host, port, userName, password, keyword);

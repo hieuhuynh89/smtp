@@ -22,27 +22,45 @@ import javax.mail.internet.MimeMultipart;
 
 public class SSLEmail {
 	
-	final static String from = "huynhchihieu75@gmail.com";
-	final static String to = "huynhchihieu75@gmail.com";
-	final static String password = "fxyapjhuahjwsjsj";
+//	final static String from = "huynhchihieu75@gmail.com";
+//	final static String to = "huynhchihieu75@gmail.com";
+//	final static String password = "fxyapjhuahjwsjsj";
+	
+	final static String host = "testmail.com";
+	final static String from = "user1@testmail.com";
+	final static String fromPassword = "1234";
+	final static int port = 465;
+	
+	final static String to = "user2@testmail.com";
 	
 	/**
 	 * Outgoing Mail (SMTP) Server requires TLS or SSL: smtp.gmail.com (use
 	 * authentication) Use Authentication: Yes Port for SSL: 465
 	 */
 	public static void main(String[] args) {
+		
+		
 		System.out.println("SSLEmail Start");
+		
+		System.setProperty("javax.net.ssl.trustStore", "D:\\working\\java\\keystore\\hmailserver\\hmailserver.jks");
+		
+		
+		System.out.println(System.getProperty("javax.net.ssl.trustStore"));
+		
 		Properties props = new Properties();
-		props.put("mail.smtp.host", "smtp.gmail.com"); // SMTP Host
-		props.put("mail.smtp.socketFactory.port", "465"); // SSL Port
+		props.put("mail.smtp.host", host); // SMTP Host
+		props.put("mail.smtp.timeout", 5000);
+//		props.put("mail.smtp.ssl.trust", "testmail.com");
+//		props.put("mail.smtps.ssl.enable", true);
+		props.put("mail.smtp.port", port); // SMTP Port
+//		props.put("mail.smtp.socketFactory.port", port); // SSL Port
 		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); // SSL Factory Class
 		props.put("mail.smtp.auth", "true"); // Enabling SMTP Authentication
-		props.put("mail.smtp.port", "465"); // SMTP Port
 
 		Authenticator auth = new Authenticator() {
 			// override the getPasswordAuthentication method
 			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(from, password);
+				return new PasswordAuthentication(from, fromPassword);
 			}
 		};
 
